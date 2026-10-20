@@ -1,0 +1,38 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+.venv-*/
+venv/
+env/
+
+# Packaging / build artifacts
+build/
+dist/
+*.egg-info/
+src/*.egg-info/
+
+# Pytest / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Generated experiment artifacts and outputs.
+# Only the analysis-layer facts and tables that the narrative documents cite are tracked.
+artifacts/*
+!artifacts/analysis/
+artifacts/analysis/*
+!artifacts/analysis/experiment-v2-002-report/
+!artifacts/analysis/robustness-report/
+artifacts/analysis/*/figures/
+results/
+delivery/
+
+# OS / IDE files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

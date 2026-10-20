@@ -1,0 +1,17 @@
+period,lead_band,route,orders,late,late_rate
+validation,11-20d,inter_state,1127,323,0.286602
+validation,11-20d,intra_state,6389,355,0.055564
+validation,21-30d,inter_state,11324,1720,0.151890
+validation,21-30d,intra_state,2911,102,0.035040
+validation,<=10d,inter_state,4,1,0.250000
+validation,<=10d,intra_state,325,20,0.061538
+validation,>30d,inter_state,5078,437,0.086058
+validation,>30d,intra_state,267,5,0.018727
+backtest,11-20d,inter_state,3049,112,0.036733
+backtest,11-20d,intra_state,3358,75,0.022335
+backtest,21-30d,inter_state,4580,109,0.023799
+backtest,21-30d,intra_state,1363,15,0.011005
+backtest,<=10d,inter_state,273,27,0.098901
+backtest,<=10d,intra_state,2628,309,0.117580
+backtest,>30d,inter_state,3602,26,0.007218
+backtest,>30d,intra_state,441,1,0.002268

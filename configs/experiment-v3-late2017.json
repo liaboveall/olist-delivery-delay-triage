@@ -1,0 +1,176 @@
+{
+  "config_version": "experiment-v3-late2017.0",
+  "schema_version": "3.0.0",
+  "research_config": "configs/research-v3.json",
+  "smoke_only": false,
+  "description": "Pre-registered second evaluation period: same candidates and rules as experiment-v3, selected on monthly folds June-September 2017 and tested once on purchases from 2017-10-26 to 2017-12-31 (includes Black Friday). No model results for this period existed when the configuration was frozen.",
+  "random_seed": 5126,
+  "primary_label": "calendar_day",
+  "sensitivity_label": "timestamp",
+  "policy_contract": {
+    "primary_policy_id": "daily_end_of_day_top10_floor_v2",
+    "batch_frequency": "D",
+    "decision_time_of_day": "23:59:59.999999",
+    "primary_budget": 0.1,
+    "sensitivity_budgets": [
+      0.05,
+      0.1,
+      0.15,
+      0.2
+    ],
+    "quota_rounding": "floor",
+    "allow_zero_quota_days": true,
+    "allow_cross_day_carryover": false,
+    "exclude_known_delivered_before_decision": true,
+    "separate_already_overdue_before_decision": true,
+    "tie_break_order": [
+      "-risk_score",
+      "+order_purchase_timestamp",
+      "+order_id",
+      "+sample_draw_id"
+    ]
+  },
+  "selection_contract": {
+    "selection_at": "2017-10-26 00:00:00",
+    "primary_metric": "mean_daily_10pct_capture_on_validation_folds",
+    "secondary_metric": "mean_average_precision_on_validation_folds",
+    "min_relative_gain_over_best_rule": 0.005,
+    "prefer_simpler_model_within": 0.005,
+    "simplicity_preference": [
+      "rule_short_promised_lead",
+      "rule_seller_history",
+      "rule_region_lead",
+      "rule_route_recent_lead",
+      "rule_route_recent_ca_lead",
+      "rule_promise_slack",
+      "logistic_regression",
+      "decision_tree"
+    ],
+    "feature_version_preference": [
+      "base_v2",
+      "base_v3"
+    ],
+    "require_positive_paired_gain_over_best_rule": true,
+    "max_fitted_model_configs": 24
+  },
+  "baseline_rules": [
+    "rule_random",
+    "rule_short_promised_lead",
+    "rule_seller_history",
+    "rule_region_lead",
+    "global_prior_baseline",
+    "rule_route_recent_lead",
+    "rule_route_recent_ca_lead",
+    "rule_promise_slack"
+  ],
+  "model_grid": {
+    "logistic_regression": {
+      "C": [
+        0.1,
+        1.0
+      ],
+      "class_weight": [
+        null,
+        "balanced"
+      ],
+      "max_iter": 1500
+    },
+    "decision_tree": {
+      "max_depth": [
+        3,
+        5
+      ],
+      "min_samples_leaf": [
+        150,
+        300
+      ],
+      "class_weight": [
+        null,
+        "balanced"
+      ]
+    },
+    "feature_variants": [
+      "base_v2",
+      "base_v3"
+    ]
+  },
+  "uncertainty_contract": {
+    "row_bootstrap_replicates": 2000,
+    "block_bootstrap_replicates": 2000,
+    "block_calendar_unit": "W-MON",
+    "min_reliable_weeks": 8,
+    "confidence_level": 0.95,
+    "paired_comparison_against": "best_validation_rule"
+  },
+  "cost_scenarios": [
+    {
+      "scenario_id": "conservative_low_benefit",
+      "description": "Hypothetical low benefit per true late warning ($2.00) vs contact cost ($0.30) and false alert annoyance ($0.20)",
+      "benefit_per_tp": 2.0,
+      "cost_per_contact": 0.3,
+      "cost_per_fp": 0.2,
+      "cost_per_fn": 1.0
+    },
+    {
+      "scenario_id": "baseline_moderate_benefit",
+      "description": "Hypothetical moderate benefit per true late warning ($5.00) vs contact cost ($0.25) and false alert cost ($0.15)",
+      "benefit_per_tp": 5.0,
+      "cost_per_contact": 0.25,
+      "cost_per_fp": 0.15,
+      "cost_per_fn": 2.0
+    },
+    {
+      "scenario_id": "high_sla_penalty",
+      "description": "Hypothetical high benefit of proactive mitigation ($10.00) vs contact cost ($0.20) and false alert cost ($0.10)",
+      "benefit_per_tp": 10.0,
+      "cost_per_contact": 0.2,
+      "cost_per_fp": 0.1,
+      "cost_per_fn": 5.0
+    }
+  ],
+  "tolerances": {
+    "metric_abs_tol": 1e-10,
+    "score_abs_tol": 1e-08
+  },
+  "split_contract": {
+    "validation_folds": [
+      {
+        "fold_id": "val_2017_06",
+        "train_start": "2016-09-01 00:00:00",
+        "train_at": "2017-06-01 00:00:00",
+        "val_start": "2017-06-01 00:00:00",
+        "val_end": "2017-07-01 00:00:00"
+      },
+      {
+        "fold_id": "val_2017_07",
+        "train_start": "2016-09-01 00:00:00",
+        "train_at": "2017-07-01 00:00:00",
+        "val_start": "2017-07-01 00:00:00",
+        "val_end": "2017-08-01 00:00:00"
+      },
+      {
+        "fold_id": "val_2017_08",
+        "train_start": "2016-09-01 00:00:00",
+        "train_at": "2017-08-01 00:00:00",
+        "val_start": "2017-08-01 00:00:00",
+        "val_end": "2017-09-01 00:00:00"
+      },
+      {
+        "fold_id": "val_2017_09",
+        "train_start": "2016-09-01 00:00:00",
+        "train_at": "2017-09-01 00:00:00",
+        "val_start": "2017-09-01 00:00:00",
+        "val_end": "2017-10-01 00:00:00"
+      }
+    ],
+    "selection_at": "2017-10-26 00:00:00",
+    "backtest": {
+      "fold_id": "historical_backtest",
+      "train_start": "2016-09-01 00:00:00",
+      "train_at": "2017-10-26 00:00:00",
+      "test_start": "2017-10-26 00:00:00",
+      "test_end": "2018-01-01 00:00:00",
+      "decision_freeze_at": "2017-10-26 00:00:00"
+    }
+  }
+}

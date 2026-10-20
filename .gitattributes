@@ -1,0 +1,2 @@
+# Keep every file byte-exact: data/ is SHA-256 checked and src/ is bound to the formal run by source hash.
+* -text

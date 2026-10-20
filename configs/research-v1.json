@@ -1,0 +1,68 @@
+{
+  "config_version": "research-v1.0",
+  "description": "Frozen research configuration for W0-W2 data preparation, dual labels, geography audit, and temporal splits.",
+  "random_seed": 5126,
+  "paths": {
+    "data_dir": "data",
+    "runs_dir": "artifacts/runs"
+  },
+  "label_contract": {
+    "primary_label": "calendar_day",
+    "sensitivity_label": "timestamp",
+    "prediction_at_col": "order_purchase_timestamp",
+    "label_available_at_col": "order_delivered_customer_date",
+    "estimated_delivery_col": "order_estimated_delivery_date",
+    "timezone_policy": "preserve_source_naive_local_time",
+    "observation_cutoff": "UNKNOWN"
+  },
+  "geography_contract": {
+    "primary_centroid_method": "cleaned_median",
+    "sensitivity_centroid_method": "raw_mean",
+    "brazil_lat_bounds": [-34.0, 6.0],
+    "brazil_lng_bounds": [-74.0, -34.0],
+    "deduplicate_exact_rows": true
+  },
+  "history_contract": {
+    "event_available_at_col": "order_delivered_customer_date",
+    "strict_inequality": "event_available_at < prediction_at",
+    "exclude_current_order": true,
+    "smoothing_alpha": 5.0,
+    "low_history_threshold": 5,
+    "multi_seller_aggregation": "mean"
+  },
+  "split_contract": {
+    "validation_folds": [
+      {
+        "fold_id": "val_2018_01",
+        "train_at": "2018-01-01 00:00:00",
+        "val_start": "2018-01-01 00:00:00",
+        "val_end": "2018-02-01 00:00:00"
+      },
+      {
+        "fold_id": "val_2018_02",
+        "train_at": "2018-02-01 00:00:00",
+        "val_start": "2018-02-01 00:00:00",
+        "val_end": "2018-03-01 00:00:00"
+      },
+      {
+        "fold_id": "val_2018_03",
+        "train_at": "2018-03-01 00:00:00",
+        "val_start": "2018-03-01 00:00:00",
+        "val_end": "2018-04-01 00:00:00"
+      },
+      {
+        "fold_id": "val_2018_04",
+        "train_at": "2018-04-01 00:00:00",
+        "val_start": "2018-04-01 00:00:00",
+        "val_end": "2018-05-01 00:00:00"
+      }
+    ],
+    "selection_at": "2018-05-26 18:18:03",
+    "backtest": {
+      "fold_id": "historical_backtest",
+      "train_at": "2018-05-26 18:18:03",
+      "test_start": "2018-05-26 18:18:03",
+      "test_end": "2018-08-30 00:00:00"
+    }
+  }
+}

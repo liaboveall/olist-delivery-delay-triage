@@ -1,0 +1,109 @@
+{
+  "config_version": "experiment-v2.0",
+  "schema_version": "2.0.0",
+  "research_config": "configs/research-v2.json",
+  "smoke_only": false,
+  "description": "Frozen v2 experiment configuration enforcing daily capacity floor policy, domain baseline rules, 24-config finite model grid, chronological tail calibration, and paired weekly block bootstrap.",
+  "random_seed": 5126,
+  "primary_label": "calendar_day",
+  "sensitivity_label": "timestamp",
+  "policy_contract": {
+    "primary_policy_id": "daily_end_of_day_top10_floor_v2",
+    "batch_frequency": "D",
+    "decision_time_of_day": "23:59:59.999999",
+    "primary_budget": 0.10,
+    "sensitivity_budgets": [0.05, 0.10, 0.15, 0.20],
+    "quota_rounding": "floor",
+    "allow_zero_quota_days": true,
+    "allow_cross_day_carryover": false,
+    "exclude_known_delivered_before_decision": true,
+    "separate_already_overdue_before_decision": true,
+    "tie_break_order": [
+      "-risk_score",
+      "+order_purchase_timestamp",
+      "+order_id",
+      "+sample_draw_id"
+    ]
+  },
+  "selection_contract": {
+    "selection_at": "2018-05-26 18:18:03",
+    "primary_metric": "pooled_daily_10pct_capture_on_val_2018_01_to_04",
+    "secondary_metric": "pooled_average_precision_on_val_2018_01_to_04",
+    "min_relative_gain_over_best_rule": 0.005,
+    "prefer_simpler_model_within": 0.005,
+    "simplicity_preference": [
+      "rule_short_promised_lead",
+      "rule_seller_history",
+      "rule_region_lead",
+      "logistic_regression",
+      "decision_tree"
+    ],
+    "feature_version_preference": [
+      "base_v2",
+      "extended_purchase_assumptions_v2"
+    ],
+    "require_positive_paired_gain_over_best_rule": true,
+    "max_fitted_model_configs": 24
+  },
+  "baseline_rules": [
+    "rule_random",
+    "rule_short_promised_lead",
+    "rule_seller_history",
+    "rule_region_lead",
+    "global_prior_baseline"
+  ],
+  "model_grid": {
+    "logistic_regression": {
+      "C": [0.1, 1.0],
+      "class_weight": [null, "balanced"],
+      "max_iter": 1500
+    },
+    "decision_tree": {
+      "max_depth": [3, 5],
+      "min_samples_leaf": [150, 300],
+      "class_weight": [null, "balanced"]
+    },
+    "feature_variants": [
+      "base_v2",
+      "extended_purchase_assumptions_v2"
+    ]
+  },
+  "uncertainty_contract": {
+    "row_bootstrap_replicates": 2000,
+    "block_bootstrap_replicates": 2000,
+    "block_calendar_unit": "W-MON",
+    "min_reliable_weeks": 8,
+    "confidence_level": 0.95,
+    "paired_comparison_against": "best_validation_rule"
+  },
+  "cost_scenarios": [
+    {
+      "scenario_id": "conservative_low_benefit",
+      "description": "Hypothetical low benefit per true late warning ($2.00) vs contact cost ($0.30) and false alert annoyance ($0.20)",
+      "benefit_per_tp": 2.0,
+      "cost_per_contact": 0.30,
+      "cost_per_fp": 0.20,
+      "cost_per_fn": 1.00
+    },
+    {
+      "scenario_id": "baseline_moderate_benefit",
+      "description": "Hypothetical moderate benefit per true late warning ($5.00) vs contact cost ($0.25) and false alert cost ($0.15)",
+      "benefit_per_tp": 5.0,
+      "cost_per_contact": 0.25,
+      "cost_per_fp": 0.15,
+      "cost_per_fn": 2.00
+    },
+    {
+      "scenario_id": "high_sla_penalty",
+      "description": "Hypothetical high benefit of proactive mitigation ($10.00) vs contact cost ($0.20) and false alert cost ($0.10)",
+      "benefit_per_tp": 10.0,
+      "cost_per_contact": 0.20,
+      "cost_per_fp": 0.10,
+      "cost_per_fn": 5.00
+    }
+  ],
+  "tolerances": {
+    "metric_abs_tol": 1e-10,
+    "score_abs_tol": 1e-8
+  }
+}

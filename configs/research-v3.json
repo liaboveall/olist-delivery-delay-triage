@@ -1,0 +1,117 @@
+{
+  "config_version": "research-v3.0",
+  "schema_version": "3.0.0",
+  "description": "Research configuration v3: identical to research-v2 except that a late order's label counts as known from the day after its missed promised date (censoring-aware maturity), and the base_v3 feature version is available.",
+  "random_seed": 5126,
+  "paths": {
+    "data_dir": "data",
+    "runs_dir": "artifacts/runs"
+  },
+  "cohort_contract": {
+    "source_orders_expected": 99441,
+    "cohort_a_delivered_expected": 96470,
+    "excluded_unknown_expected": 2971,
+    "orders_without_items_expected": 775,
+    "non_delivered_with_items_expected": 2196,
+    "allow_unknown_outcome_zero_fill": false
+  },
+  "label_contract": {
+    "primary_label": "calendar_day",
+    "sensitivity_label": "timestamp",
+    "prediction_at_col": "order_purchase_timestamp",
+    "label_available_at_col": "order_delivered_customer_date",
+    "estimated_delivery_col": "order_estimated_delivery_date",
+    "timezone_policy": "preserve_source_naive_local_time",
+    "observation_cutoff": "UNKNOWN",
+    "label_known_rule": "delivered_or_overdue"
+  },
+  "feature_version": "base_v2",
+  "available_feature_versions": [
+    "base_v2",
+    "extended_purchase_assumptions_v2",
+    "base_v3"
+  ],
+  "geography_contract": {
+    "primary_centroid_method": "cleaned_median",
+    "sensitivity_centroid_method": "raw_mean",
+    "brazil_lat_bounds": [
+      -33.8,
+      5.4
+    ],
+    "brazil_lng_bounds": [
+      -74.1,
+      -28.8
+    ],
+    "deduplicate_exact_rows": true,
+    "fallback_hierarchy": [
+      "zip_prefix",
+      "state_centroid",
+      "national_centroid",
+      "missing"
+    ]
+  },
+  "history_contract": {
+    "event_available_at_col": "order_delivered_customer_date",
+    "strict_inequality": "event_available_at < prediction_at",
+    "exclude_current_order": true,
+    "reject_inverted_timestamps": true,
+    "smoothing_alpha": 5.0,
+    "default_prior": 0.068,
+    "low_history_threshold": 5,
+    "multi_seller_aggregation": "mean"
+  },
+  "calibration_contract": {
+    "core_fraction": 0.8,
+    "tail_fraction": 0.2,
+    "enforce_core_label_maturity": true,
+    "refit_full_after_calibration": false,
+    "min_tail_samples": 100,
+    "min_tail_positives": 10,
+    "methods": [
+      "uncalibrated",
+      "platt",
+      "isotonic"
+    ]
+  },
+  "split_contract": {
+    "validation_folds": [
+      {
+        "fold_id": "val_2018_01",
+        "train_start": "2016-09-01 00:00:00",
+        "train_at": "2018-01-01 00:00:00",
+        "val_start": "2018-01-01 00:00:00",
+        "val_end": "2018-02-01 00:00:00"
+      },
+      {
+        "fold_id": "val_2018_02",
+        "train_start": "2016-09-01 00:00:00",
+        "train_at": "2018-02-01 00:00:00",
+        "val_start": "2018-02-01 00:00:00",
+        "val_end": "2018-03-01 00:00:00"
+      },
+      {
+        "fold_id": "val_2018_03",
+        "train_start": "2016-09-01 00:00:00",
+        "train_at": "2018-03-01 00:00:00",
+        "val_start": "2018-03-01 00:00:00",
+        "val_end": "2018-04-01 00:00:00"
+      },
+      {
+        "fold_id": "val_2018_04",
+        "train_start": "2016-09-01 00:00:00",
+        "train_at": "2018-04-01 00:00:00",
+        "val_start": "2018-04-01 00:00:00",
+        "val_end": "2018-05-01 00:00:00"
+      }
+    ],
+    "selection_at": "2018-05-26 18:18:03",
+    "backtest": {
+      "fold_id": "historical_backtest",
+      "train_start": "2016-09-01 00:00:00",
+      "train_at": "2018-05-26 18:18:03",
+      "test_start": "2018-05-26 18:18:03",
+      "test_end": "2018-08-30 00:00:00",
+      "decision_freeze_at": "2018-05-26 18:18:03"
+    }
+  }
+}

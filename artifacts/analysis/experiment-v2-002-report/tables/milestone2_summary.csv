@@ -1,0 +1,5 @@
+policy,alerts,tp,fp,positives,precision,recall,lift
+purchase_time_daily_top10,1885,117,1768,674,0.062069,0.173591,1.776793
+milestone2_shipping_limit_breach,1575,306,1269,674,0.194286,0.454006,5.561645
+union,3315,388,2927,674,0.117044,0.575668,3.350507
+purchase_time_equal_volume,1575,114,1461,674,0.072381,0.169139,2.071985

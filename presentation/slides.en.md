@@ -219,7 +219,7 @@ IS5126 Final Project · Group _[number and members]_
 
 # Backup: reproducibility
 
-- Formal run `experiment-v2-001` is frozen with its code and configuration hashes; raw data are checked against SHA-256 digests
+- Formal run `experiment-v2-002` is frozen with its code and configuration hashes; raw data are checked against SHA-256 digests
 - `scripts/report_analysis.py` rebuilds every table and figure in the report from the frozen predictions, and stops if the formal run's headline counts do not reproduce exactly
 - `scripts/check_docs_consistency.py` rejects any number in the report, slides or briefs that is not traceable to an artifact, and any broken figure link
 - One command runs all acceptance gates: `scripts/acceptance.ps1`

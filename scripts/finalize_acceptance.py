@@ -79,6 +79,12 @@ def _package_delivery(
     analysis_src = root / "artifacts" / "analysis" / f"{run_id}-report"
     analysis_dst = evidence_root / f"{run_id}-report-analysis"
 
+    aux_reports: dict[str, bytes] = {}
+    for aux_name in ("consultation-brief.en.md", "development-status.md", "speaker-notes.zh-CN.md"):
+        aux_src = (root / "docs" / aux_name) if (root / "docs" / aux_name).exists() else (reports_dir / aux_name)
+        if aux_src.exists():
+            aux_reports[aux_name] = aux_src.read_bytes()
+
     # delivery/ is fully generated: rebuild the folders this function owns so removed files never linger.
     for d in (reports_dir, pres_dir, configs_dir, evidence_root):
         if d.exists():
@@ -102,6 +108,8 @@ def _package_delivery(
         src = root / "docs" / name
         if src.exists():
             shutil.copy2(src, reports_dir / name)
+    for aux_name, aux_bytes in aux_reports.items():
+        (reports_dir / aux_name).write_bytes(aux_bytes)
     for fig in sorted((root / "docs" / "figures").glob("*.png")):
         shutil.copy2(fig, reports_dir / "figures" / fig.name)
 
